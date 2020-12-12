@@ -16,19 +16,20 @@ global label
 label = Label(root, image=img)
 label.place(x=0, y=0, relwidth=1, relheight=1)
 today = str(date.today())
-sube = Label(root, text="Enter the Subject", bg="#a0a0a0", border=0, font=("Arial",10),)
-sube.pack(pady=(60,0))
-fnam = Entry(root, width=20, fg="black", bg="#a0a0a0", border=.8, font=7, justify="center")
+sube = Label(root, text="Enter the Subject", bg="#585858", border=0, font=("Arial",11),fg="gray2")
+sube.pack(pady=(55,0))
+fnam = Entry(root, width=16, fg="black", bg="#585858", border=0.5, font=7, justify="center")
 fnam.pack(pady=(10, 5))
+fnam.focus()
 
 path = os.path.normpath(os.path.expanduser("~/Desktop"))
 os.chdir(path)
-isnt = os.path.isdir("Notes-assist")
+isnt = os.path.isdir("Notes Assist")
 if not isnt:
-    os.mkdir("Notes-assist")
-    os.chdir("Notes-assist")
+    os.mkdir("Notes Assist")
+    os.chdir("Notes Assist")
 else:
-    os.chdir("Notes-assist")
+    os.chdir("Notes Assist")
 
 isda = os.path.isfile("fnamesdb.db")
 if not isda:
@@ -89,7 +90,8 @@ def next():
     n = c1.fetchall()
     v = StringVar()
     for i in n:
-        name = Radiobutton(top, text=i[0], variable=v, bg="darkgray", fg="black", value=str(i[0]), command=opendir)
+        name = Radiobutton(top, text=i[0], variable=v, bg="#585858", fg="black", value=str(i[0]), command=opendir,
+                           activebackground="gray40", font=("Arial",10))
         name.pack(pady=(10, 5))
 
     conn.commit()
@@ -101,6 +103,11 @@ def next():
         file_name = re.sub(r'[^\w]', ' ', now)
         image.save(file_name + ".png")
 
+
+    def web():
+        webbrowser.open('https://linktr.ee/sudo_nick')
+
+
     button2 = Button(top, text="Take Screenshot", command=take_ss, bg="black", border=0, fg="white", padx=20, pady=6)
     button2.config(activebackground="gray15", activeforeground="white")
     button2.pack(pady=(10, 5))
@@ -109,6 +116,10 @@ def next():
                  activeforeground="white")
     ext.config(padx=20, pady=5, bg="black", fg="white", border=0, relief="raised")
     ext.pack(pady=(10, 5))
+
+    follow = Button(root, text="Follow Me : @sudo_nick", font=("Arial", 9), bg="gray10", border=0, fg="white",
+                    activebackground="gray10", activeforeground="white", command=web)
+    follow.pack()
 
     top.geometry("300x310")
     top.resizable(0, 0)
@@ -131,12 +142,12 @@ skip = Button(root, text="Skip", command=next, justify="center", activebackgroun
 skip.config(padx=17, pady=5, bg="black", fg="white", border=0, relief="raised")
 skip.pack(pady=(15, 5))
 
-footer = Frame(root, bg="black")
+footer = Frame(root, bg="gray10")
 footer.place(x=0, y=285, relwidth=1, relheight=1)
 
-follow = Button(root, text="Follow Me @sudo_nick", font=("Arial",9), bg="black", border=0,fg="white",
-                activebackground="black", activeforeground="white", command=web)
-follow.pack(pady=(12,0),ipadx=9, ipady=10)
+follow = Button(root, text="Follow Me : @sudo_nick", font=("Arial",9), bg="gray10", border=0,fg="white",
+                activebackground="gray10", activeforeground="white", command=web)
+follow.pack(pady=(19,6),ipadx=9, ipady=10)
 
 root.geometry("300x310")
 root.resizable(0, 0)
