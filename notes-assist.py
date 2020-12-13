@@ -6,12 +6,14 @@ from datetime import datetime
 from tkinter import *
 import webbrowser
 import re
+from PIL import ImageGrab
 
 root = Tk()
 root.title("Notes Assist")
-root.iconbitmap('./assets/notes.ico')
+icon = PhotoImage(file='./notes.png')
+root.iconbitmap('./notes.ico')
 global img
-img = PhotoImage(file='./assets/tre.png')
+img = PhotoImage(file='./tre.png')
 global label
 label = Label(root, image=img)
 label.place(x=0, y=0, relwidth=1, relheight=1)
@@ -53,12 +55,14 @@ def func():
         os.mkdir(ent)
         conn.commit()
         conn.close()
-        labelinf = Label(root, text=ent + " is added.", width=20, height=1, bg="#a0a0a0", fg="black")
-        labelinf.pack(pady=10)
+        #won't be shown because i suck at positioning the widgets.
+        labelinf = Label(root, text=ent + " is added.", width=20, height=1, bg="black", fg="black")
+        labelinf.pack()
 
     else:
-        labelinf = Label(root, text=ent + " is already present.", width=30, height=1, bg="#a0a0a0", fg="black")
-        labelinf.pack(pady=10)
+        # won't be shown because i suck at positioning the widgets.
+        labelinf = Label(root, text=ent + " is already present.", width=30, height=1, bg="black", fg="black")
+        labelinf.pack()
 
 
 def next():
@@ -66,7 +70,8 @@ def next():
     global top
     top = Toplevel()
     top.title("Notes Assist")
-    top.wm_iconbitmap("E:/HPro/assets/notes.ico")
+    top.iconphoto(False, icon)
+    #top.wm_iconbitmap(icon)
     label = Label(top, image=img)
     label.place(x=0, y=0, relwidth=1, relheight=1)
 
@@ -89,16 +94,23 @@ def next():
     c1.execute("SELECT names FROM fnames")
     n = c1.fetchall()
     v = StringVar()
+    rbframe = Frame(top, bg="#585858")
+    rbframe.pack(padx=0)
+    num = 0
+    col = 0
     for i in n:
-        name = Radiobutton(top, text=i[0], variable=v, bg="#585858", fg="black", value=str(i[0]), command=opendir,
+        name = Radiobutton(rbframe, text=i[0], variable=v, bg="#585858", fg="black", value=str(i[0]), command=opendir,
                            activebackground="gray40", font=("Arial",10))
-        name.pack(pady=(10, 5))
-
+        if num == 5:
+            num = 0
+            col += 1
+        name.grid(row=num, column=col, pady=5, padx=5)
+        num +=1
     conn.commit()
     conn.close()
 
     def take_ss():
-        image = pyscreenshot.grab()
+        image = ImageGrab.grab()
         now = str(datetime.now())
         file_name = re.sub(r'[^\w]', ' ', now)
         image.save(file_name + ".png")
@@ -110,16 +122,17 @@ def next():
 
     button2 = Button(top, text="Take Screenshot", command=take_ss, bg="black", border=0, fg="white", padx=20, pady=6)
     button2.config(activebackground="gray15", activeforeground="white")
-    button2.pack(pady=(10, 5))
+
+    button2.pack(pady=(15,5))
 
     ext = Button(top, text="Exit", command=top.quit, justify="center", activebackground="gray15",
                  activeforeground="white")
-    ext.config(padx=20, pady=5, bg="black", fg="white", border=0, relief="raised")
-    ext.pack(pady=(10, 5))
+    ext.config(padx=15, pady=5, bg="black", fg="white", border=0, relief="raised")
+    ext.pack(pady=(5,10))
 
-    follow = Button(root, text="Follow Me : @sudo_nick", font=("Arial", 9), bg="gray10", border=0, fg="white",
-                    activebackground="gray10", activeforeground="white", command=web)
-    follow.pack()
+    follow = Button(top, text="Follow Me : @sudo_nick", font=("Arial", 9), bg="gray10", border=0, fg="white",
+                    activebackground="gray10", activeforeground="white", command=web,padx=100)
+    follow.pack(pady=(10,0))
 
     top.geometry("300x310")
     top.resizable(0, 0)
@@ -142,12 +155,10 @@ skip = Button(root, text="Skip", command=next, justify="center", activebackgroun
 skip.config(padx=17, pady=5, bg="black", fg="white", border=0, relief="raised")
 skip.pack(pady=(15, 5))
 
-footer = Frame(root, bg="gray10")
-footer.place(x=0, y=285, relwidth=1, relheight=1)
 
 follow = Button(root, text="Follow Me : @sudo_nick", font=("Arial",9), bg="gray10", border=0,fg="white",
-                activebackground="gray10", activeforeground="white", command=web)
-follow.pack(pady=(19,6),ipadx=9, ipady=10)
+                activebackground="gray10", activeforeground="white", command=web,padx=100,pady=10)
+follow.pack(pady=(15,0))
 
 root.geometry("300x310")
 root.resizable(0, 0)
