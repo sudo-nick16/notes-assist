@@ -4,3 +4,7 @@ Since it's pandemic time, everybody has to attend their classes online, and taki
 Update: I've made few changes(added some features) and made it look better. It does have few bugs, which  I'll to fix as soon as i can.
 
 (P.S.: When I was about to upload it on Github. I thought I'd name it "Snap-notes" but when I googled "Snap Notes" I found out that there's already an app with the same functionality, available on google play store.)
+
+
+# If you want the python code of the software :
+Download the "notes-assist.zip" file from the repo and DM me on instagram for the password of that archive file.(Insta ID: sudo_nick)
