@@ -90,6 +90,9 @@ def next():
         isd = os.path.isdir(pa)
         if isd:
             os.chdir(pa)
+        else:
+            os.mkdir(pa)
+            os.chdir(pa)
 
         isT = os.path.isdir(today)
         isT1 = os.path.isdir("../" + today)
@@ -120,6 +123,8 @@ def next():
     conn.close()
 
     def take_ss():
+        top.withdraw()
+        top.after(250)
         isT = os.path.isdir("../" + today)
         if not isT:
             pass
@@ -128,6 +133,8 @@ def next():
             now = str(datetime.now())
             file_name = re.sub(r'[^\w]', ' ', now)
             image.save(file_name + ".png")
+        top.deiconify()
+        button2.focus()
 
     def web():
         webbrowser.open('https://linktr.ee/sudo_nick')
