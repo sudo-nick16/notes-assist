@@ -1,28 +1,23 @@
-import sqlite3
-import pyscreenshot
 import os
 from datetime import date
-from datetime import datetime
 from tkinter import *
 import webbrowser
-import re
 from PIL import ImageGrab
-from tkinter import messagebox
 
 root = Tk()
 root.title("Notes Assist")
 icon = PhotoImage(file='./notes.png')
 root.iconbitmap('./notes.ico')
-#global img
-#img = PhotoImage(file='./tre.png')
-global label
-label = Label(root, bg="black")
+
+label = Label(root, bg='gray3')
 label.place(x=0, y=0, relwidth=1, relheight=1)
 today = str(date.today())
-sube = Label(root, text="Enter  the  Subject", bg="black", border=0, font=("Jokerman", 11), fg="green2")
-sube.pack(pady=(34, 0))
-fnam = Entry(root, width=16, fg="gray7", bg="white", border=0, font=("Comic Sans MS", 13), justify="center")
-fnam.pack(pady=(10, 5))
+mainhead = Label(root, text="Enter the subject", bg="gray3",
+             border=0, font=("Helvetica", 14), fg="green1")
+mainhead.pack(pady=(30, 0))
+fnam = Entry(root, width=18, fg="gray7", bg="white", border=0,
+             font=("Verdana", 13), justify="center")
+fnam.pack(pady=(10, 5), ipady=5)
 fnam.focus()
 
 path = os.path.normpath(os.path.expanduser("~/Desktop"))
@@ -34,38 +29,29 @@ if not isnt:
 else:
     os.chdir("Notes Assist")
 
-isda = os.path.isfile("fnamesdb.db")
-if not isda:
-    conn = sqlite3.connect('fnamesdb.db')
-    c = conn.cursor()
-    c.execute("CREATE TABLE fnames(names text)")
-    conn.commit()
-    conn.close()
-else:
-    pass
+
+def ceil(num):
+    l = str(num).split(".")
+    if "." in str(num):
+        if int(l[1]) != 0:
+            return int(l[0])+1
+    return int(l[0])
 
 
 def func():
+    global info
     ent = fnam.get()
     fnam.delete(0, END)
-    conn = sqlite3.connect('fnamesdb.db')
-    c = conn.cursor()
     iss = os.path.isdir(str(ent))
     if not iss:
-        c.execute("INSERT INTO fnames VALUES(:sub)", {'sub': ent})
         os.mkdir(ent)
-        conn.commit()
-        conn.close()
-        # won't be shown because i suck at positioning the widgets.
-        labelinf = Label(root, text=ent + " is added.", width=20, height=1, bg="black", fg="black")
-        labelinf.pack()
+        info.set(ent + " is created.")
+        labelinf.config(fg="green")
 
     else:
-        # won't be shown because i suck at positioning the widgets.
-        labelinf = Label(root, text=ent + " is already present.", width=30, height=1, bg="black", fg="black")
-        labelinf.pack()
+        info.set(ent + " already exists.")
+        labelinf.config(fg="gold")
 
-count = 0
 
 def next():
     root.withdraw()
@@ -73,19 +59,17 @@ def next():
     top = Toplevel()
     top.title("Notes Assist")
     top.iconphoto(False, icon)
-    # top.wm_iconbitmap(icon)
-    label = Label(top, bg="black")
+
+    label = Label(top, bg="gray3")
     label.place(x=0, y=0, relwidth=1, relheight=1)
 
-
-    def opendir(subn=0):
+    def opendir():
         pa = v.get()
-        global count
-        count += 1
-        if count > 1:
+
+        today = str(date.today())
+        if (os.getcwd().split('\\'))[-1] == today:
             os.chdir("../..")
-        else:
-            pass
+
 
         isd = os.path.isdir(pa)
         if isd:
@@ -93,6 +77,7 @@ def next():
         else:
             os.mkdir(pa)
             os.chdir(pa)
+
 
         isT = os.path.isdir(today)
         isT1 = os.path.isdir("../" + today)
@@ -102,36 +87,38 @@ def next():
         else:
             os.chdir(today)
 
-    conn = sqlite3.connect('fnamesdb.db')
-    c1 = conn.cursor()
-    c1.execute("SELECT names FROM fnames")
-    n = c1.fetchall()
+
+    target = os.path.normpath(path+"/Notes Assist/")
+    subjectListScan = [f.name for f in os.scandir(target) if f.is_dir()]
     v = StringVar()
-    rbframe = Frame(top, bg="black")
-    rbframe.pack(padx=0)
+    rbframe = Frame(top, bg="gray3")
+    rbframe.pack(padx=6, pady=6)
     num = 0
     col = 0
-    for i in n:
-        name = Radiobutton(rbframe, text=i[0], variable=v, bg="black", fg="teal", value=str(i[0]), command=opendir,
-                     activebackground="black", activeforeground="white", font=("Jokerman", 10), selectcolor="black")
+    for i in subjectListScan:
+        name = Radiobutton(rbframe, text=i, variable=v, bg="gray3", fg="cyan", value=i, command=opendir, wraplength=100,
+                           activebackground="gray3", activeforeground="white", font=("Helvetica", 11), selectcolor="black")
         if num == 4:
             num = 0
             col += 1
-        name.grid(row=num, column=col, pady=5, padx=5)
+        name.grid(row=num, column=col, pady=5, padx=5, sticky='w')
         num += 1
-    conn.commit()
-    conn.close()
 
     def take_ss():
         top.withdraw()
-        top.after(250)
+        top.after(200)
         isT = os.path.isdir("../" + today)
         if not isT:
             pass
         else:
             image = ImageGrab.grab()
-            now = str(datetime.now())
-            file_name = re.sub(r'[^\w]', ' ', now)
+            noOfSS = ([name for name in os.listdir('.') if os.path.isfile(name)])
+            if noOfSS:
+                noOfSS = int(((noOfSS[-1]).split("."))[0])
+            else:
+                noOfSS = 0
+                
+            file_name = str(noOfSS + 1)
             image.save(file_name + ".png")
         top.deiconify()
         button2.focus()
@@ -139,46 +126,76 @@ def next():
     def web():
         webbrowser.open('https://linktr.ee/sudo_nick')
 
-    button2 = Button(top, text="Take  Screenshot", command=take_ss, bg="black", border=2, fg="beige", padx=20, pady=6)
-    button2.config(activebackground="gray15", activeforeground="white", font=("Jokerman", 10))
-    button2.pack(pady=(11, 5))
+    def goback():
+        foldername = (os.getcwd().split('\\'))[-1]
+
+        if foldername in subjectListScan:
+            os.chdir("../")
+
+        elif foldername == today:
+            os.chdir("../..")
+
+        top.withdraw()
+        root.deiconify()
+
+    button2 = Button(top, text="Take  Screenshot", command=take_ss,
+                     bg="black", border=2, fg="white", padx=20)
+    button2.config(activebackground="gray8",
+                   activeforeground="beige", font=("Verdana", 10))
+    button2.pack(pady=(10, 0), ipady=7)
     button2.focus()
 
-    ext = Button(top, text="Exit", command=top.quit, justify="center", activebackground="gray15",
-                 activeforeground="white")
-    ext.config(padx=15, pady=5, bg="black", fg="beige", border=2, relief="raised", font=("Jokerman", 10))
-    ext.pack(pady=(5, 8))
+    ext = Button(top, text="Go Back", command=goback, justify="center", activebackground="gray8",
+                 activeforeground="beige")
+    ext.config(padx=10, bg="black", fg="white",
+               border=2, relief="raised", font=("Verdana", 10))
+    ext.pack(pady=(10, 8), ipady=5)
 
-    follow = Button(top, text="Creator : @sudo_nick", font=("Segoe Print", 9), bg="gray10", border=0, fg="MEDIUMPURPLE1",
-                    activebackground="gray10", activeforeground="yellow", command=web, padx=100)
-    follow.pack(pady=(5, 0))
+    widthCalc = ceil(len(subjectListScan)/4)*103;
+    if widthCalc < 250:
+        widthCalc = 250
 
-    top.geometry("300x310")
-    top.resizable(0, 0)
+    Topfollow = Button(top, text="Creator : @sudo_nick", font=("Verdana", 10), bg="gray8", border=0, fg="yellow",
+                       activebackground="gray8", activeforeground="gold", command=web, width=top.winfo_width())
+
+    rbframe.update()
+    padcalc = 320 -  top.winfo_height() - 34
+    Topfollow.pack(pady=(padcalc,0), ipady=5)
+  
+    top.protocol("WM_DELETE_WINDOW", root.quit)
+    top.geometry(f"{widthCalc + 50}x320")
+    top.resizable(1, 0)
 
 
 def web():
     webbrowser.open('https://linktr.ee/sudo_nick')
 
 
-btn = Button(root, text="Add", command=func, activebackground="gray10", activeforeground="white")
-btn.config(padx=20, pady=7, bg="black", fg="beige", border=2, relief="raised", font=("Jokerman", 8))
-btn.pack(pady=(15, 4))
+btn = Button(root, text="Add", command=func,
+             activebackground="gray8", activeforeground="white")
+btn.config(padx=20, pady=7, bg="black", fg="white",
+           border=2, relief="raised", font=("Helvetica", 11))
+btn.pack(pady=(14, 0))
 
-nextb = Button(root, text="Next", command=next, justify="center", activebackground="gray10",
+nextb = Button(root, text="Next", command=next, justify="center", activebackground="gray8",
                activeforeground="white")
-nextb.config(padx=17, pady=5, bg="black", fg="beige", border=2, relief="raised", font=("Jokerman", 8))
-nextb.pack(pady=(15, 4))
+nextb.config(padx=17, pady=5, bg="black", fg="white",
+             border=2, relief="raised", font=("Helvetica", 11))
+nextb.pack(pady=(14, 0))
 
-skip = Button(root, text="Skip", command=next, justify="center", activebackground="gray10",
-              activeforeground="white")
-skip.config(padx=17, pady=5, bg="black", fg="beige", border=2, relief="raised", font=("Jokerman", 8))
-skip.pack(pady=(15, 4))
 
-follow = Button(root, text="Creator : @sudo_nick", font=("Segoe Print", 9), bg="gray10", border=0, fg="MEDIUMPURPLE1",
-                activebackground="gray10", activeforeground="yellow", command=web, padx=100)
-follow.pack(pady=(11, 0))
+info = StringVar()
+
+labelinf = Label(root, textvariable=info,
+                 width=50, height=3, bg="gray3", fg="gray3", font=("Helvetica", 11))
+labelinf.pack(pady=(5,0))
+
+
+follow = Button(root, text="Creator : @sudo_nick", font=("Verdana", 10), bg="gray8", border=0, fg="yellow",
+                activebackground="gray8", activeforeground="gold", command=web,  width=root.winfo_width())
+follow.pack(pady=(5, 0), ipady=5)
 
 root.geometry("300x310")
+
 root.resizable(0, 0)
 root.mainloop()
