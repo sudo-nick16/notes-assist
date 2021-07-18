@@ -2,74 +2,45 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Notes Assist</title>
-    <link rel="icon" href="./notes.png" type="image/x-icon">
+    <link rel="shortcut icon" href="./notes.png" type="image/x-icon">
+    <link rel="stylesheet" href="./index.css">
+    <title>Notes Assist</title>
 </head>
-<script>
+<body>
+    <nav class="navbar">
+        <div class="nav-div" id="home"><a class="navbar-items" href="./index1.html">Home</a></div>
+        <div class="nav-div" id="download" ><a class="navbar-items" href="./download.html">Download</a></div>
+        <div class="nav-div" id="tutorial" ><a class="navbar-items" href="./tutorial.html">Tutorial</a></div>
+    </nav>
+    <div class="main">
+        <div class="logo">
+            <img src="./notes.png" class="logo-img" alt="logo" />
+            <div class="item-logo-over-div">
+                <div class="item-details">
+                    Notes Assist
+                </div>
+            </div>
+        </div>
+        <div class="description">
+            <h3 class="name-item-desc">Notes Assist:</h3>
+            <p class="desc">
+                Notes Assist is tool that allows you to click snapshots and organise them efficiently.
+                It can be used for taking notes during online classes.
+            </p>
+            <a href="http://github.com/sudo-nick16/notes-assist/" target="_blank" class="github-link" >Source Code</a>
+            <p class="desc">Download the standalone installer:</p>
+            <button class="btn" onclick='window.open("https://github.com/sudo-nick16/notes-assist/raw/main/Notes%20Assist.exe")'>Download</button>
+
+
+        </div>
+    </div>
     
-</script>
-<body> 
-    <center><h1>Notes Assist</h1></center>
-    <center><a href="https://linktr.ee/sudo_nick/"><img src="./notes.png" alt="" srcset="" width="30%" height="30%"></a></center>
-    <center><input type="button" id="btn" onclick='window.open("https://github.com/sudo-nick16/notes-assist/raw/main/Notes%20Assist.exe")' value="Download"></center>
-    <center>
-    <h2 id="he">How to use?</h2>
-      <video width="1920" height="1080" controls>
-        <source src="./tut2.mp4" type="video/mp4">
-        </video>
-    </center>
-   
 </body>
 <style>
-    body{ 
-        background-color: black;
-        color: white;
-    }
-    h1{
-        margin-top: 80px;
-        font-family: helvetica ;
-        font-size: 250%;
-        
-        
-    }
-    #he{
-        margin-top: 50px;
-        font-family: "comic sans ms";
-    }
-    img{
-        margin-top: 0px;
-    }
-    #btn{
-        color: white;
-        font-family: "Arial";
-        background-color: rgb(36, 133, 36);
-        padding: 10px ;
-        border-radius: 5%;
-        border: 0px ;
-        margin-top: 20px;
-        width: 110px;
-        font-size: 18px;
-    } 
-    video{
-        width: 50%;
-        height: 50%;
-        border: 0;
-
-    }
-
-    #btn:hover{ background-color: rgb(0, 0, 0);
-                border-color: white;
-                border: 1px solid;
-                
-    }
-    a{ font-family: "comic sans ms";
-       color: white;
-       font-size: small;
-
-    }
-    h2{
-        font-size: xx-large;
-    }
+#home{
+    border-bottom: 3px solid rgb(255, 123, 0);
+}
 </style>
 </html>
